@@ -24,8 +24,10 @@
 (require 'org-pomodoro)
 (setq org-pomodoro-play-sounds nil)
 (setq org-agenda-files (list "~/Documents/Org/"))
-(define-key org-agenda-mode-map "j" 'evil-next-line)
-(define-key org-agenda-mode-map "k" 'evil-previous-line)
+(eval-after-load "org-agenda"
+	`(progn
+		(define-key org-agenda-mode-map "j" 'evil-next-line)
+		(define-key org-agenda-mode-map "k" 'evil-previous-line)))
 
 (defun esf/evil-key-bindings-for-org ()
   ;;(message "Defining evil key bindings for org")
