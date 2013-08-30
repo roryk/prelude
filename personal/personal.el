@@ -10,3 +10,6 @@
 
 (setq mac-command-modifier 'super)
 (setq mac-option-modifier 'meta)
+
+;; any type of bell coupled with evil-mode is obnoxious
+(setq ring-bell-function 'ignore)
