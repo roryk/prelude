@@ -8,8 +8,5 @@
 (local-set-key (kbd "RET") 'newline-and-indent)
 (load-theme 'solarized-dark t)
 
-(setq mac-command-modifier 'super)
-(setq mac-option-modifier 'meta)
-
 ;; any type of bell coupled with evil-mode is obnoxious
 (setq ring-bell-function 'ignore)
