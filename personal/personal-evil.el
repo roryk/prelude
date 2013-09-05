@@ -2,6 +2,8 @@
   (package-install 'evil))
 
 (require 'evil)
+; goto-chg lets you use the g-; and g-, to go to recent changes
+(require 'goto-chg)
 
 (evil-mode 1)
 (setq evil-shift-width 2)
