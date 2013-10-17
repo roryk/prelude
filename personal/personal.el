@@ -5,8 +5,10 @@
 ;; this does the SUPER annoying auto-filling in of the closing paren
 (smartparens-global-mode -1)
 
-(local-set-key (kbd "RET") 'newline-and-indent)
-(load-theme 'solarized-dark t)
+(global-set-key (kbd "RET") 'newline-and-indent)
+(load-theme 'cyberpunk t)
 
 ;; any type of bell coupled with evil-mode is obnoxious
 (setq ring-bell-function 'ignore)
+
+(require 'ess-site)
