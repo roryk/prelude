@@ -110,6 +110,13 @@ Will only occur if prelude-whitespace is also enabled."
 
 (show-smartparens-global-mode +1)
 
+(define-key prog-mode-map (kbd "M-(") (lambda (&optional arg) (interactive "P") (sp-wrap-with-pair "(")))
+(define-key prog-mode-map (kbd "M-[") (lambda (&optional arg) (interactive "P") (sp-wrap-with-pair "[")))
+(define-key prog-mode-map (kbd "M-\"") (lambda (&optional arg) (interactive "P") (sp-wrap-with-pair "\"")))
+
+;; disable annoying blink-matching-paren
+(setq blink-matching-paren nil)
+
 ;; diminish keeps the modeline tidy
 (require 'diminish)
 
