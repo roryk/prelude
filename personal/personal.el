@@ -12,3 +12,5 @@
 (setq ring-bell-function 'ignore)
 
 (require 'ess-site)
+;; turn off this ultra annoying replace the underscore mode
+(ess-toggle-underscore nil)
