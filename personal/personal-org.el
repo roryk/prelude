@@ -9,6 +9,7 @@
 (setq org-agenda-custom-commands
       '(("W" "Weekly Review"
          ((agenda "" ((org-agenda-ndays 14)))
+          (todo "WAITING") ;; projects we are waiting on
           (todo "NEXT")  ;; review what is next
           (tags "INBOX" ((org-agenda-files '("~/Documents/Org/notes.org"))))
           (tags "PROJECT") ;; review all projects
@@ -16,10 +17,10 @@
 
         ("D" "Daily review"
          ((agenda "" ((org-agenda-ndays 14)))
+          (todo "WAITING") ;; projects we are waiting on
           (todo "NEXT")
           (tags "INBOX" ((org-agenda-files '("~/Documents/Org/notes.org"))))
-          (todo "READ"))))
-)
+          (todo "READ")))))
 
 (require 'org-pomodoro)
 (setq org-pomodoro-play-sounds nil)
