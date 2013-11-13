@@ -19,4 +19,5 @@
 (require 'switch-window)
 (global-set-key (kbd "C-x o") 'switch-window)
 
-
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
