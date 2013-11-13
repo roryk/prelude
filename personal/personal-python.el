@@ -30,7 +30,8 @@
   (auto-complete-mode +1)
   (whitespace-mode +1)
   (virtualenv-minor-mode +1)
-  (electric-indent-mode -1))
+  (electric-indent-mode -1)
+  (smartparens-mode -1))
 
 (setq prelude-python-mode-hook 'prelude-python-mode-defaults)
 
