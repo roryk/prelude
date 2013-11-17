@@ -11,7 +11,7 @@
          ((agenda "" ((org-agenda-ndays 14)))
           (todo "WAITING") ;; projects we are waiting on
           (todo "NEXT")  ;; review what is next
-          (tags "INBOX" ((org-agenda-files '("~/Documents/Org/notes.org"))))
+          (tags "INBOX" ((org-agenda-files '("~/Documents/Org/inbox.org"))))
           (tags "PROJECT") ;; review all projects
           (tags "SOMEDAY"))) ;; review someday/maybe items
 
@@ -19,7 +19,7 @@
          ((agenda "" ((org-agenda-ndays 14)))
           (todo "WAITING") ;; projects we are waiting on
           (todo "NEXT")
-          (tags "INBOX" ((org-agenda-files '("~/Documents/Org/notes.org"))))
+          (tags "INBOX" ((org-agenda-files '("~/Documents/Org/inbox.org"))))
           (todo "READ")))))
 
 (require 'org-pomodoro)
@@ -52,5 +52,29 @@
     ">" 'org-metaright ; indent
     ))
 (esf/evil-key-bindings-for-org)
+
+(setq org-directory "~/Documents/Org")
+(setq org-mobile-inbox-for-pull "~/Documents/Org/inbox.org")
+(setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
+(setq org-mobile-files '("~/Documents/Org"))
+
+(set-register ?w '(file . "~/Documents/Org/hsph.org"))
+(setq org-caldav-url "http://ruelz.synology.me:5005")
+(setq org-caldav-calendar-id "calendar/rory")
+(setq org-caldav-inbox "/Users/rory/Documents/Org/inbox.org")
+(setq org-caldav-files '("/Users/rory/Documents/Org/hsph.org"))
+(defvar org-caldav-sync-timer nil)
+(defvar org-caldav-sync-idle-secs (* 60 5))
+(defun org-caldav-sync-enable ()
+  "enable automatic org-caldav sync with the Synology calendar"
+  (interactive)
+  (setq org-caldav-sync-timer
+        (run-with-idle-timer org-caldav-sync-idle-secs t
+                             'org-caldav-sync)));
+(defun org-caldav-sync-disable ()
+  "disable automatic org-caldav sync"
+  (interactive)
+  (cancel-timer org-caldav-sync-timer))
+(org-caldav-sync-enable)
 
 (provide 'personal-org)
