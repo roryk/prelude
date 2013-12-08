@@ -53,18 +53,27 @@
     ))
 (esf/evil-key-bindings-for-org)
 
-(setq org-directory "~/Documents/Org")
-(setq org-mobile-inbox-for-pull "~/Documents/Org/inbox.org")
-(setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
-(setq org-mobile-files '("~/Documents/Org"))
+;; (setq org-directory "~/Documents/Org")
+;; (setq org-mobile-inbox-for-pull "~/Documents/Org/inbox.org")
+;; (setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
+;; (setq org-mobile-files '("~/Documents/Org"))
+
 
 (set-register ?w '(file . "~/Documents/Org/hsph.org"))
+;(require 'org-caldav)
+(load "~/.emacs.d/elpa/org-caldav/org-caldav.el")
 (setq org-caldav-url "http://ruelz.synology.me:5005")
 (setq org-caldav-calendar-id "calendar/rory")
 (setq org-caldav-inbox "/Users/rory/Documents/Org/inbox.org")
 (setq org-caldav-files '("/Users/rory/Documents/Org/hsph.org"))
 (defvar org-caldav-sync-timer nil)
-(defvar org-caldav-sync-idle-secs (* 60 5))
+(defvar org-caldav-sync-idle-secs (* 60 60 12))
+;; (setq org-caldav-delete-org-entries 'always)
+;; (setq org-caldav-save-directory (expand-file-name "calendar" user-emacs-directory))
+;; (setq org-caldav-backup-file (expand-file-name "calendar/org-caldav-backup.org"
+;;                                                user-emacs-directory))
+(setq org-caldav-show-sync-results nil)
+;(setq org-caldav-show-sync-results 'with-headings)
 (defun org-caldav-sync-enable ()
   "enable automatic org-caldav sync with the Synology calendar"
   (interactive)
@@ -76,5 +85,9 @@
   (interactive)
   (cancel-timer org-caldav-sync-timer))
 (org-caldav-sync-enable)
+
+(add-hook 'org-mode-hook
+          (lambda ()
+            (add-hook 'after-save-hook 'org-caldav-sync nil 'make-it-local)))
 
 (provide 'personal-org)

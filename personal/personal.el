@@ -1,5 +1,5 @@
 (key-chord-mode -1)
-(setq default-tab-width 2)
+(setq tab-width 2)
 (setq whitespace-style (quote (face tabs trailing lines-tail)))
 
 ;; this does the SUPER annoying auto-filling in of the closing paren
