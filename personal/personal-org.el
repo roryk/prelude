@@ -1,9 +1,9 @@
 (require 'org)
 (setq org-todo-keywords
-      '((type "TODO(t)" "WAITING(w)" "APPT(a)" "NEXT(n)" "READ(r)"
+      '((type "TODO(t)" "WAITING(w)" "APPT(a)" "NEXT(n)" "READ(r)" "BUG(b)"
               "|"
-              "DEFERRED(e)" "DONE(d)" "SOMEDAY(s)" "MAYBE(m)" "IDEA(i)")
-        (sequence "PROJECT(p)" "|" "FINISHED(f)" "CANCELLED(c)")))
+              "DEFERRED(e)" "DONE(d)" "SOMEDAY(s)" "MAYBE(m)" "IDEA(i)" "FIXED(f)")
+        (sequence "PROJECT(p)" "|" "COMPLETE(c)" "CANCELLED(c)")))
 
 ; stuff for GTD
 (setq org-agenda-custom-commands
