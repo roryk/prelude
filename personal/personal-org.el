@@ -25,10 +25,19 @@
 (require 'org-pomodoro)
 (setq org-pomodoro-play-sounds nil)
 (setq org-agenda-files (list "~/Documents/Org/"))
-(eval-after-load "org-agenda"
-	`(progn
-		(define-key org-agenda-mode-map "j" 'evil-next-line)
-		(define-key org-agenda-mode-map "k" 'evil-previous-line)))
+
+;; use vi j/k to navigate the agenda
+(add-after-load "org-agenda"
+  `(progn
+     (define-key org-agenda-mode-map "j" 'evil-next-line)
+     (define-key org-agenda-mode-map "k" 'evil-previous-line)))
+
+(add-hook 'org-mode-hook
+          (lambda ()
+            (define-key org-mode-map [(shift right)] 'windmove-right)
+            (define-key org-mode-map [(shift left)] 'windmove-left)
+            (define-key org-mode-map [(shift up)] 'windmove-up)
+            (define-key org-mode-map [(shift down)] 'windmove-down)))
 
 (defun esf/evil-key-bindings-for-org ()
   ;;(message "Defining evil key bindings for org")
@@ -53,14 +62,8 @@
     ))
 (esf/evil-key-bindings-for-org)
 
-;; (setq org-directory "~/Documents/Org")
-;; (setq org-mobile-inbox-for-pull "~/Documents/Org/inbox.org")
-;; (setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
-;; (setq org-mobile-files '("~/Documents/Org"))
-
 
 (set-register ?w '(file . "~/Documents/Org/hsph.org"))
-;(require 'org-caldav)
 (load "~/.emacs.d/elpa/org-caldav/org-caldav.el")
 (setq org-caldav-url "http://ruelz.synology.me:5005")
 (setq org-caldav-calendar-id "calendar/rory")
@@ -68,12 +71,7 @@
 (setq org-caldav-files '("/Users/rory/Documents/Org/hsph.org"))
 (defvar org-caldav-sync-timer nil)
 (defvar org-caldav-sync-idle-secs (* 60 60 12))
-;; (setq org-caldav-delete-org-entries 'always)
-;; (setq org-caldav-save-directory (expand-file-name "calendar" user-emacs-directory))
-;; (setq org-caldav-backup-file (expand-file-name "calendar/org-caldav-backup.org"
-;;                                                user-emacs-directory))
 (setq org-caldav-show-sync-results nil)
-;(setq org-caldav-show-sync-results 'with-headings)
 (defun org-caldav-sync-enable ()
   "enable automatic org-caldav sync with the Synology calendar"
   (interactive)
@@ -90,4 +88,9 @@
           (lambda ()
             (add-hook 'after-save-hook 'org-caldav-sync nil 'make-it-local)))
 
+;; windmove conflicts with the org-mode changing timestamps and what not
+(add-hook 'org-shiftup-final-hook 'windmove-up)
+(add-hook 'org-shiftleft-final-hook 'windmove-left)
+(add-hook 'org-shiftdown-final-hook 'windmove-down)
+(add-hook 'org-shiftright-final-hook 'windmove-right)
 (provide 'personal-org)
