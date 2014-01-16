@@ -3,7 +3,7 @@
       '((type "TODO(t)" "WAITING(w)" "APPT(a)" "NEXT(n)" "READ(r)" "BUG(b)"
               "|"
               "DEFERRED(e)" "DONE(d)" "SOMEDAY(s)" "MAYBE(m)" "IDEA(i)" "FIXED(f)")
-        (sequence "PROJECT(p)" "|" "COMPLETE(c)" "CANCELLED(c)")))
+        (sequence "PROJECT(p)" "|" "COMPLETE(k)" "CANCELLED(c)")))
 
 ; stuff for GTD
 (setq org-agenda-custom-commands
@@ -27,7 +27,7 @@
 (setq org-agenda-files (list "~/Documents/Org/"))
 
 ;; use vi j/k to navigate the agenda
-(add-after-load "org-agenda"
+(eval-after-load "org-agenda"
   `(progn
      (define-key org-agenda-mode-map "j" 'evil-next-line)
      (define-key org-agenda-mode-map "k" 'evil-previous-line)))
@@ -63,30 +63,30 @@
 (esf/evil-key-bindings-for-org)
 
 
-(set-register ?w '(file . "~/Documents/Org/hsph.org"))
-(load "~/.emacs.d/elpa/org-caldav/org-caldav.el")
-(setq org-caldav-url "http://ruelz.synology.me:5005")
-(setq org-caldav-calendar-id "calendar/rory")
-(setq org-caldav-inbox "/Users/rory/Documents/Org/inbox.org")
-(setq org-caldav-files '("/Users/rory/Documents/Org/hsph.org"))
-(defvar org-caldav-sync-timer nil)
-(defvar org-caldav-sync-idle-secs (* 60 60 12))
-(setq org-caldav-show-sync-results nil)
-(defun org-caldav-sync-enable ()
-  "enable automatic org-caldav sync with the Synology calendar"
-  (interactive)
-  (setq org-caldav-sync-timer
-        (run-with-idle-timer org-caldav-sync-idle-secs t
-                             'org-caldav-sync)));
-(defun org-caldav-sync-disable ()
-  "disable automatic org-caldav sync"
-  (interactive)
-  (cancel-timer org-caldav-sync-timer))
-(org-caldav-sync-enable)
+;; (set-register ?w '(file . "~/Documents/Org/hsph.org"))
+;; (load "~/.emacs.d/elpa/org-caldav/org-caldav.el")
+;; (setq org-caldav-url "http://ruelz.synology.me:5005")
+;; (setq org-caldav-calendar-id "calendar/rory")
+;; (setq org-caldav-inbox "/Users/rory/Documents/Org/inbox.org")
+;; (setq org-caldav-files '("/Users/rory/Documents/Org/hsph.org"))
+;; (defvar org-caldav-sync-timer nil)
+;; (defvar org-caldav-sync-idle-secs (* 60 60 12))
+;; (setq org-caldav-show-sync-results nil)
+;; (defun org-caldav-sync-enable ()
+;;   "enable automatic org-caldav sync with the Synology calendar"
+;;   (interactive)
+;;   (setq org-caldav-sync-timer
+;;         (run-with-idle-timer org-caldav-sync-idle-secs t
+;;                              'org-caldav-sync)));
+;; (defun org-caldav-sync-disable ()
+;;   "disable automatic org-caldav sync"
+;;   (interactive)
+;;   (cancel-timer org-caldav-sync-timer))
+;; (org-caldav-sync-enable)
 
-(add-hook 'org-mode-hook
-          (lambda ()
-            (add-hook 'after-save-hook 'org-caldav-sync nil 'make-it-local)))
+;; (add-hook 'org-mode-hook
+;;           (lambda ()
+;;             (add-hook 'after-save-hook 'org-caldav-sync nil 'make-it-local)))
 
 ;; windmove conflicts with the org-mode changing timestamps and what not
 (add-hook 'org-shiftup-final-hook 'windmove-up)
