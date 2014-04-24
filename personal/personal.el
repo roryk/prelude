@@ -11,7 +11,7 @@
 (load-theme 'cyberpunk t) ; this is nice and bright
 
 ;; load it like this so it is respected in new frames
-(setq default-frame-alist '((font . "Source-Code-Pro-14")))
+(setq default-frame-alist '((font . "Source-Code-Pro-12")))
 
 ;; any type of bell coupled with evil-mode is obnoxious
 (setq ring-bell-function 'ignore)
@@ -22,3 +22,11 @@
 
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+
+;; run a local flycheck not remote
+(defadvice flycheck-start-checker (around flycheck-fix-start-process activate compile)
+  "Make flycheck-start-checker use `start-process' instead of `start-file-process'."
+  (let ((orig (symbol-function 'start-file-process)))
+    (fset 'start-file-process (symbol-function 'start-process))
+    (unwind-protect (progn ad-do-it)
+      (fset 'start-file-process orig))))
