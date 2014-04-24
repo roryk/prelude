@@ -22,9 +22,35 @@
           (tags "INBOX" ((org-agenda-files '("~/Documents/Org/inbox.org"))))
           (todo "READ")))))
 
+;; pomodoro
 (require 'org-pomodoro)
 (setq org-pomodoro-play-sounds nil)
 (setq org-agenda-files (list "~/Documents/Org/"))
+;; Needs terminal-notifier (brew install terminal-notifier)
+(defun notify-osx (title message)
+  (call-process "terminal-notifier"
+                nil 0 nil
+                "-group" "Emacs"
+                "-title" title
+                "-sender" "org.gnu.Emacs"
+                "-message" message))
+
+;; org-pomodoro mode hooks
+(add-hook 'org-pomodoro-finished-hook
+          (lambda ()
+            (notify-osx "Pomodoro completed!" "Time for a break.")))
+
+(add-hook 'org-pomodoro-break-finished-hook
+          (lambda ()
+            (notify-osx "Pomodoro Short Break Finished" "Ready for Another?")))
+
+(add-hook 'org-pomodoro-long-break-finished-hook
+          (lambda ()
+            (notify-osx "Pomodoro Long Break Finished" "Ready for Another?")))
+
+(add-hook 'org-pomodoro-killed-hook
+          (lambda ()
+            (notify-osx "Pomodoro Killed" "One does not simply kill a pomodoro!")))
 
 ;; use vi j/k to navigate the agenda
 (eval-after-load "org-agenda"
@@ -93,4 +119,13 @@
 (add-hook 'org-shiftleft-final-hook 'windmove-left)
 (add-hook 'org-shiftdown-final-hook 'windmove-down)
 (add-hook 'org-shiftright-final-hook 'windmove-right)
+
+;; we do not need HUGE fonts for the title
+(custom-set-faces
+ '(org-level-1 ((t (:inherit outline-1 :height 1.0))))
+ '(org-level-2 ((t (:inherit outline-2 :height 1.0))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.0))))
+ '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
+ )
 (provide 'personal-org)
