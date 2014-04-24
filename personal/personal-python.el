@@ -1,7 +1,7 @@
 (require 'prelude-programming)
 
 ;; pip install jedi epc
-(prelude-ensure-module-deps '(epc auto-complete jedi virtualenv))
+;; (prelude-require-packages '(epc auto-complete jedi virtualenv))
 
 ;; Setup python-mode
 (autoload 'python-mode "python" "Python Mode." t)
@@ -19,14 +19,13 @@
    "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
 
 ;; Setup jedi (auto-completion)
-(setq jedi:setup-keys t)
-(autoload 'jedi:setup "jedi" nil t)
+;; (autoload 'jedi:setup "jedi" nil t)
 
 
 
 (defun prelude-python-mode-defaults ()
   (run-hooks 'prelude-prog-mode-hook) ;; run manually; not derived from prog-mode
-  (jedi:setup)
+;;  (jedi:setup)
   (auto-complete-mode +1)
   (whitespace-mode +1)
   (virtualenv-minor-mode +1)
