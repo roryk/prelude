@@ -1,4 +1,6 @@
 (require 'org)
+(prelude-require-packages '(org-pomodoro))
+
 (setq org-todo-keywords
       '((type "TODO(t)" "WAITING(w)" "APPT(a)" "NEXT(n)" "READ(r)" "BUG(b)"
               "|"
