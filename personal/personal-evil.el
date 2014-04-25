@@ -1,86 +1,83 @@
-(unless (package-installed-p 'evil)
-  (package-install 'evil))
+; goto-chg lets you use the g-; and g-, to go to recent changes
+(prelude-require-packages '(evil goto-chg))
+
+(setq evil-mode-line-format 'before)
+(setq evil-want-C-u-scroll t)
+
+(setq evil-emacs-state-cursor  '("red" box))
+(setq evil-normal-state-cursor '("gray" box))
+(setq evil-visual-state-cursor '("gray" box))
+(setq evil-insert-state-cursor '("gray" bar))
+(setq evil-motion-state-cursor '("gray" box))
 
 (require 'evil)
-; goto-chg lets you use the g-; and g-, to go to recent changes
-(require 'goto-chg)
-
 (evil-mode 1)
+
+;;
+;; Evil Surround
+;;
+(prelude-require-package 'surround)
+(require 'surround)
+(global-surround-mode 1)
+
+;;
+;; Evil search visual selection with *
+;;
+(prelude-require-package 'evil-visualstar)
+(require 'evil-visualstar)
+
+;;
+;; Evil Numbers
+;;
+(prelude-require-package 'evil-numbers)
+(require 'evil-numbers)
+
+(define-key evil-normal-state-map (kbd "C-A")
+  'evil-numbers/inc-at-pt)
+(define-key evil-normal-state-map (kbd "C-S-A")
+  'evil-numbers/dec-at-pt)
+
+;;
+;; Other useful Commands
+;;
+(evil-ex-define-cmd "W"     'evil-write-all)
+(evil-ex-define-cmd "Tree"  'speedbar-get-focus)
+(evil-ex-define-cmd "linum" 'linum-mode)
+(evil-ex-define-cmd "Align" 'align-regexp)
+
+
+;; Scrolling
+(defun evil-scroll-down-other-window ()
+  (interactive)
+  (scroll-other-window))
+
+(defun evil-scroll-up-other-window ()
+  (interactive)
+  (scroll-other-window '-))
+
+(define-key evil-normal-state-map
+  (kbd "C-S-d") 'evil-scroll-down-other-window)
+
+(define-key evil-normal-state-map
+  (kbd "C-S-u") 'evil-scroll-up-other-window)
+
+;;
+;; Magit from avsej
+;;
+(evil-add-hjkl-bindings magit-log-mode-map 'emacs)
+(evil-add-hjkl-bindings magit-commit-mode-map 'emacs)
+(evil-add-hjkl-bindings magit-branch-manager-mode-map 'emacs
+  "K" 'magit-discard-item
+  "L" 'magit-key-mode-popup-logging)
+(evil-add-hjkl-bindings magit-status-mode-map 'emacs
+  "K" 'magit-discard-item
+  "l" 'magit-key-mode-popup-logging
+  "h" 'magit-toggle-diff-refine-hunk)
+
 (setq evil-shift-width 2)
 
-;; AceJump is a nice addition to evil's standard motions.
-
-;; The following definitions are necessary to define evil motions for ace-jump-mode (version 2).
-
-;; ace-jump is actually a series of commands which makes handling by evil
-;; difficult (and with some other things as well), using this macro we let it
-;; appear as one.
-
-(defmacro evil-enclose-ace-jump (&rest body)
-  `(let ((old-mark (mark))
-         (ace-jump-mode-scope 'window))
-     (remove-hook 'pre-command-hook #'evil-visual-pre-command t)
-     (remove-hook 'post-command-hook #'evil-visual-post-command t)
-     (unwind-protect
-         (progn
-           ,@body
-           (recursive-edit))
-       (if (evil-visual-state-p)
-           (progn
-             (add-hook 'pre-command-hook #'evil-visual-pre-command nil t)
-             (add-hook 'post-command-hook #'evil-visual-post-command nil t)
-             (set-mark old-mark))
-         (push-mark old-mark)))))
-(defcustom evil-esc-delay 0
-  "Time in seconds to wait for another key after ESC."
-  :type 'number
-  :group 'evil)
-
-(evil-define-motion evil-ace-jump-line-mode (count)
-  :type line
-  (evil-enclose-ace-jump
-   (ace-jump-mode 9)))
-
-(evil-define-motion evil-ace-jump-word-mode (count)
-  :type exclusive
-  (evil-enclose-ace-jump
-   (ace-jump-mode 1)))
-
-(evil-define-motion evil-ace-jump-char-to-mode (count)
-  :type exclusive
-  (evil-enclose-ace-jump
-   (ace-jump-mode 5)
-   (forward-char -1)))
-
-(add-hook 'ace-jump-mode-end-hook 'exit-recursive-edit)
-
-
-(define-key evil-normal-state-map [escape] 'keyboard-quit)
-(define-key evil-visual-state-map [escape] 'keyboard-quit)
-(define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
-
-;; some proposals for binding:
-
-(define-key evil-motion-state-map (kbd "SPC") #'evil-ace-jump-char-mode)
-(define-key evil-motion-state-map (kbd "C-SPC") #'evil-ace-jump-word-mode)
-
-(define-key evil-operator-state-map (kbd "SPC") #'evil-ace-jump-char-mode) ; similar to f
-(define-key evil-operator-state-map (kbd "C-SPC") #'evil-ace-jump-char-to-mode) ; similar to t
-(define-key evil-operator-state-map (kbd "M-SPC") #'evil-ace-jump-word-mode)
-
-;; different jumps for different visual modes
-(defadvice evil-visual-line (before spc-for-line-jump activate)
-  (define-key evil-motion-state-map (kbd "SPC") #'evil-ace-jump-line-mode))
-
-(defadvice evil-visual-char (before spc-for-char-jump activate)
-  (define-key evil-motion-state-map (kbd "SPC") #'evil-ace-jump-char-mode))
-
-(defadvice evil-visual-block (before spc-for-char-jump activate)
-  (define-key evil-motion-state-map (kbd "SPC") #'evil-ace-jump-char-mode))
+;;; enable ace-jump mode with evil-mode
+(define-key evil-normal-state-map (kbd "SPC") 'ace-jump-mode)
 
 (defun esf/evil-key-bindings-for-org ()
   ;;(message "Defining evil key bindings for org")
