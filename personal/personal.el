@@ -1,5 +1,6 @@
-(key-chord-mode -1) ; this does not play well with evil-mode
+(prelude-require-packages '(cyberpunk-theme yaml-mode))
 
+;;(key-chord-mode -1) ; this does not play well with evil-mode
 
 (setq tab-width 2)
 (setq whitespace-style (quote (face tabs trailing lines-tail)))
