@@ -1,7 +1,7 @@
 (require 'prelude-programming)
 
 ;; pip install jedi epc
-;; (prelude-require-packages '(epc auto-complete jedi virtualenv))
+(prelude-require-packages '(epc auto-complete jedi virtualenv))
 
 ;; Setup python-mode
 (autoload 'python-mode "python" "Python Mode." t)
