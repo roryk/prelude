@@ -9,7 +9,7 @@
 ;; (smartparens-global-mode -1)
 
 (global-set-key (kbd "RET") 'newline-and-indent)
-(load-theme 'cyberpunk t) ; this is nice and bright
+;; (load-theme 'cyberpunk t) ; this is nice and bright
 
 ;; load it like this so it is respected in new frames
 (setq default-frame-alist '((font . "Source-Code-Pro-12")))
@@ -21,7 +21,7 @@
 ;; turn off this ultra annoying replace the underscore mode
 (ess-toggle-underscore nil)
 
-(require 'yaml-mode)
+;; set up YAML mode
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
 ;; run a local flycheck not remote
@@ -31,3 +31,23 @@
     (fset 'start-file-process (symbol-function 'start-process))
     (unwind-protect (progn ad-do-it)
       (fset 'start-file-process orig))))
+
+;; set up some nice ido mode defaults
+(setq ido-enable-flex-matching t
+      ido-auto-merge-work-directories-length -1
+      ido-create-new-buffer 'always
+      ido-use-filename-at-point 'guess
+      ido-everywhere t
+      ido-default-buffer-method 'selected-window)
+(ido-mode 1)
+(put 'ido-exit-minibuffer 'disabled nil)
+(when (require 'ido-ubiquitous nil t)
+  (ido-ubiquitous-mode 1))
+
+; save backup files to not
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+
+(provide 'personal.el)
