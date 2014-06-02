@@ -1,5 +1,6 @@
+(prelude-require-packages '[slamhound clj-refactor])
 
-(prelude-require-packages '[slamhound])
+(cljr-add-keybindings-with-prefix "C-c ;")
 
 (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
 (add-hook 'cider-repl-mode-hook 'smartparens-strict-mode)
