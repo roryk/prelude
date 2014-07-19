@@ -2,8 +2,8 @@
 
 (prelude-require-packages '(evil-paredit))
 
-;(setq evil-cross-lines t)
-;(setq evil-move-cursor-back t)
+;; prevent esc-key from translating to meta-key in terminal mode
+(setq evil-esc-delay 0)
 
 (define-key evil-normal-state-map ";" 'smex)
 (define-key evil-visual-state-map ";" 'smex)
