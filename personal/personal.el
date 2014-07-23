@@ -2,17 +2,30 @@
 
 ;;(key-chord-mode -1) ; this does not play well with evil-mode
 
+(tool-bar-mode -1)
+(set-scroll-bar-mode -1)
 (setq tab-width 2)
 (setq whitespace-style (quote (face tabs trailing lines-tail)))
+(setq ns-use-srgb-colorspace t)
+;; one space at the end of sentences please
+(setq sentence-end-double-space nil)
+
+(setq user-full-name "Rory Kirchner")
+(setq user-mail-address "rory.kirchner@gmail.com")
+
+;; set registers to jump to quickly
+(mapcar
+ (lambda (r)
+   (set-register (car r) (cons 'file (cdr r))))
+ '((?o . "~/Documents/Org/hsph.org")))
 
 ;; this does the SUPER annoying auto-filling in of the closing paren
 ;; (smartparens-global-mode -1)
 
 (global-set-key (kbd "RET") 'newline-and-indent)
-;; (load-theme 'cyberpunk t) ; this is nice and bright
+(load-theme 'cyberpunk t) ; this is nice and bright
 
-;; load it like this so it is respected in new frames
-(setq default-frame-alist '((font . "Source-Code-Pro-12")))
+(add-to-list 'default-frame-alist '(font . "Source-Code-Pro-12"))
 
 ;; any type of bell coupled with evil-mode is obnoxious
 (setq ring-bell-function 'ignore)
@@ -51,3 +64,4 @@
       `((".*" ,temporary-file-directory t)))
 
 (provide 'personal.el)
+
