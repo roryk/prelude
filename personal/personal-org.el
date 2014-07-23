@@ -1,28 +1,41 @@
 (require 'org)
 (prelude-require-packages '(org-pomodoro))
 
+(setq org-modules '(org-habit))
+(org-load-modules-maybe t)
+
+(setq org-deadline-warning-days 14)
+(global-set-key (kbd "C-c c") 'org-capture)
+(setq org-directory "~/Documents/Org")
+(setq org-default-notes-file "~/Documents/Org/hsph.org")
+
 (setq org-todo-keywords
-      '((type "TODO(t)" "WAITING(w)" "APPT(a)" "NEXT(n)" "READ(r)" "BUG(b)"
-              "|"
-              "DEFERRED(e)" "DONE(d)" "SOMEDAY(s)" "MAYBE(m)" "IDEA(i)" "FIXED(f)")
-        (sequence "PROJECT(p)" "|" "COMPLETE(k)" "CANCELLED(c)")))
+      '((sequence
+         "MEET(m)"
+         "TODO(t)"
+         "WAITING(w)"
+         "SOMEDAY(.)"
+         "|" "DONE(x!)" "CANCELLED(c@)")
+        (sequence "TODELEGATE(-)" "DELEGATED(d)" "COMPLETE(x)")))
 
 ; stuff for GTD
 (setq org-agenda-custom-commands
       '(("W" "Weekly Review"
-         ((agenda "" ((org-agenda-ndays 14)))
+         ((agenda "" ((org-agenda-span 7)
+                      (org-agenda-start-day "-7d")
+                      (org-agenda-entry-types '(:timestamp))
+                      (org-agenda-show-log t)))
           (todo "WAITING") ;; projects we are waiting on
-          (todo "NEXT")  ;; review what is next
+          (todo "TODO")  ;; review what is next
           (tags "INBOX" ((org-agenda-files '("~/Documents/Org/inbox.org"))))
           (tags "PROJECT") ;; review all projects
           (tags "SOMEDAY"))) ;; review someday/maybe items
 
         ("D" "Daily review"
-         ((agenda "" ((org-agenda-ndays 14)))
-          (todo "WAITING") ;; projects we are waiting on
+         ((agenda "" ((org-agenda-ndays 15)))
+          (todo "DELEGATED") ;; projects we are waiting on
           (todo "NEXT")
-          (tags "INBOX" ((org-agenda-files '("~/Documents/Org/inbox.org"))))
-          (todo "READ")))))
+          (tags "@errands")))))
 
 ;; pomodoro
 (require 'org-pomodoro)
@@ -90,32 +103,6 @@
     ))
 (esf/evil-key-bindings-for-org)
 
-
-;; (set-register ?w '(file . "~/Documents/Org/hsph.org"))
-;; (load "~/.emacs.d/elpa/org-caldav/org-caldav.el")
-;; (setq org-caldav-url "http://ruelz.synology.me:5005")
-;; (setq org-caldav-calendar-id "calendar/rory")
-;; (setq org-caldav-inbox "/Users/rory/Documents/Org/inbox.org")
-;; (setq org-caldav-files '("/Users/rory/Documents/Org/hsph.org"))
-;; (defvar org-caldav-sync-timer nil)
-;; (defvar org-caldav-sync-idle-secs (* 60 60 12))
-;; (setq org-caldav-show-sync-results nil)
-;; (defun org-caldav-sync-enable ()
-;;   "enable automatic org-caldav sync with the Synology calendar"
-;;   (interactive)
-;;   (setq org-caldav-sync-timer
-;;         (run-with-idle-timer org-caldav-sync-idle-secs t
-;;                              'org-caldav-sync)));
-;; (defun org-caldav-sync-disable ()
-;;   "disable automatic org-caldav sync"
-;;   (interactive)
-;;   (cancel-timer org-caldav-sync-timer))
-;; (org-caldav-sync-enable)
-
-;; (add-hook 'org-mode-hook
-;;           (lambda ()
-;;             (add-hook 'after-save-hook 'org-caldav-sync nil 'make-it-local)))
-
 ;; windmove conflicts with the org-mode changing timestamps and what not
 (add-hook 'org-shiftup-final-hook 'windmove-up)
 (add-hook 'org-shiftleft-final-hook 'windmove-left)
@@ -128,6 +115,70 @@
  '(org-level-2 ((t (:inherit outline-2 :height 1.0))))
  '(org-level-3 ((t (:inherit outline-3 :height 1.0))))
  '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
- '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
- )
+ '(org-level-5 ((t (:inherit outline-5 :height 1.0)))))
+
+ ;; org-capture
+(setq org-reverse-note-order t)
+(setq org-refile-use-outline-path nil)
+(setq org-refile-allow-creating-parent-nodes 'confirm)
+(setq org-refile-use-cache nil)
+(setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
+(setq org-blank-before-new-entry nil)
+
+(setq org-tag-alist '(("@work" . ?b)
+                      ("@home" . ?h)
+                      ("@writing" . ?w)
+                      ("@errands" . ?e)
+                      ("@coding" . ?c)
+                      ("@phone" . ?p)
+                      ("@reading" . ?r)
+                      ("@summary" . ?s)
+                      ("@computer" . ?l)
+                      ("quantified" . ?q)
+                      ("lowenergy" . ?0)
+                      ("highenergy" . ?1)))
+;; track time
+(setq org-clock-idle-time nil)
+(setq org-log-done 'time)
+(setq org-clock-persist t)
+(org-clock-persistence-insinuate)
+(setq org-clock-report-include-clocking-task t)
+(defadvice org-clock-in (after sacha activate)
+  "Mark STARTED when clocked in."
+  (save-excursion
+    (catch 'exit
+      (cond
+       ((derived-mode-p 'org-agenda-mode)
+        (let* ((marker (or (org-get-at-bol 'org-marker)
+                           (org-agenda-error)))
+               (hdmarker (or (org-get-at-bol 'org-hd-marker) marker))
+               (pos (marker-position marker))
+               (col (current-column))
+               newhead)
+          (org-with-remote-undo (marker-buffer marker)
+            (with-current-buffer (marker-buffer marker)
+              (widen)
+              (goto-char pos)
+              (org-back-to-heading t)
+              (if (org-get-todo-state)
+                  (org-todo "STARTED"))))))
+       (t (if (org-get-todo-state)
+              (org-todo "STARTED")))))))
+
+(setq org-log-into-drawer "LOGBOOK")
+(setq org-clock-into-drawer 1)
+
+
+(defun rory/org-mode-ask-effort ()
+  "Ask for an effort estimate when clocking in."
+  (unless (org-entry-get (point) "Effort")
+    (let ((effort
+           (completing-read
+            "Effort: "
+            (org-entry-get-multivalued-property (point) "Effort"))))
+      (unless (equal effort "")
+        (org-set-property "Effort" effort)))))
+
+(add-hook 'org-clock-in-prepare-hook 'rory/org-mode-ask-effort)
+
 (provide 'personal-org)
