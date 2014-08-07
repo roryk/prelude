@@ -1,4 +1,4 @@
-(prelude-require-packages '(cyberpunk-theme yaml-mode))
+(prelude-require-packages '(cyberpunk-theme yaml-mode ess))
 
 ;;(key-chord-mode -1) ; this does not play well with evil-mode
 
