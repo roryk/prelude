@@ -11,11 +11,11 @@
 
 (setq org-todo-keywords
       '((sequence
-         "MEET(m)"
          "TODO(t)"
          "WAITING(w)"
          "SOMEDAY(.)"
          "|" "DONE(x!)" "CANCELLED(c@)")
+        (sequence "MEET(m)" "|" "COMPLETE(x)")
         (sequence "TODELEGATE(-)" "DELEGATED(d)" "COMPLETE(x)")))
 
 ; stuff for GTD
