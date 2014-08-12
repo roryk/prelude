@@ -20,7 +20,43 @@
 ;; Setup jedi (auto-completion)
 ;; (autoload 'jedi:setup "jedi" nil t)
 
-
+;; fix for arithmetic error
+(defun python-indent-guess-indent-offset ()
+  "Guess and set `python-indent-offset' for the current buffer."
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (widen)
+      (goto-char (point-min))
+      (let ((block-end))
+        (while (and (not block-end)
+                    (re-search-forward
+                     (python-rx line-start block-start) nil t))
+          (when (and
+                 (not (python-syntax-context-type))
+                 (progn
+                   (goto-char (line-end-position))
+                   (python-util-forward-comment -1)
+                   (if (equal (char-before) ?:)
+                       t
+                     (forward-line 1)
+                     (when (python-info-block-continuation-line-p)
+                       (while (and (python-info-continuation-line-p)
+                                   (not (eobp)))
+                         (forward-line 1))
+                       (python-util-forward-comment -1)
+                       (when (equal (char-before) ?:)
+                         t)))))
+            (setq block-end (point-marker))))
+        (let ((indentation
+               (when block-end
+                 (goto-char block-end)
+                 (python-util-forward-comment)
+                 (current-indentation))))
+          (if (> indentation 0)
+              (set (make-local-variable 'python-indent-offset) indentation)
+            (message "Can't guess python-indent-offset, using defaults: %s"
+                     python-indent-offset)))))))
 
 (defun prelude-python-mode-defaults ()
   (run-hooks 'prelude-prog-mode-hook) ;; run manually; not derived from prog-mode
