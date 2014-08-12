@@ -49,7 +49,7 @@
 (when (require 'ido-ubiquitous nil t)
   (ido-ubiquitous-mode 1))
 
-; save backup files to not
+;; don't spread backup files everywhere
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
