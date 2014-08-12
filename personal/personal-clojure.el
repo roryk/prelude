@@ -12,5 +12,7 @@
 (setq nrepl-buffer-name-show-port t)
 (setq cider-repl-print-length 25)
 (setq cider-prompt-save-file-on-load nil)
+(setq cider-show-error-buffer nil)
+
 
 (provide 'personal-clojure)
