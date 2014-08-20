@@ -22,10 +22,6 @@
 ;; any type of bell coupled with evil-mode is obnoxious
 (setq ring-bell-function 'ignore)
 
-(require 'ess-site)
-;; turn off this ultra annoying replace the underscore mode
-(ess-toggle-underscore nil)
-
 ;; set up YAML mode
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 

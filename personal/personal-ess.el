@@ -5,6 +5,13 @@
 (ess-toggle-underscore nil)
 
 ;; auto-complete can be ultra slow in R buffers, so disable it
-(setq ess-auto-complete nil)
+(setq ess-use-auto-complete nil)
+;; company-mode is also superbadslow
+
+(add-hook 'ess-mode-hook
+          (lambda ()
+            (company-mode 0)))
+
+(setq ess-use-eldoc-nill)
 
 (provide 'personal-ess)
