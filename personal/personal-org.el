@@ -1,5 +1,5 @@
 (require 'org)
-(prelude-require-packages '(org-pomodoro))
+(prelude-require-packages '(org-caldav))
 
 (setq org-modules '(org-habit))
 (org-load-modules-maybe t)
@@ -37,10 +37,10 @@
           (todo "NEXT")
           (tags "@errands")))))
 
-;; pomodoro
-(require 'org-pomodoro)
-(setq org-pomodoro-play-sounds nil)
-(setq org-agenda-files (list "~/Documents/Org/"))
+(setq org-agenda-files '("~/Documents/Org/hsph.org" "~/Documents/Org/habits.org"))
+(setq org-icalendar-combined-agenda-file "~/Dropbox/Public/hsph.ics")
+(setq org-icalendar-alarm-time 60)
+
 ;; Needs terminal-notifier (brew install terminal-notifier)
 (defun notify-osx (title message)
   (call-process "terminal-notifier"
@@ -49,23 +49,6 @@
                 "-title" title
                 "-sender" "org.gnu.Emacs"
                 "-message" message))
-
-;; org-pomodoro mode hooks
-(add-hook 'org-pomodoro-finished-hook
-          (lambda ()
-            (notify-osx "Pomodoro completed!" "Time for a break.")))
-
-(add-hook 'org-pomodoro-break-finished-hook
-          (lambda ()
-            (notify-osx "Pomodoro Short Break Finished" "Ready for Another?")))
-
-(add-hook 'org-pomodoro-long-break-finished-hook
-          (lambda ()
-            (notify-osx "Pomodoro Long Break Finished" "Ready for Another?")))
-
-(add-hook 'org-pomodoro-killed-hook
-          (lambda ()
-            (notify-osx "Pomodoro Killed" "One does not simply kill a pomodoro!")))
 
 ;; use vi j/k to navigate the agenda
 (eval-after-load "org-agenda"
@@ -137,48 +120,30 @@
                       ("quantified" . ?q)
                       ("lowenergy" . ?0)
                       ("highenergy" . ?1)))
-;; track time
-(setq org-clock-idle-time nil)
-(setq org-log-done 'time)
-(setq org-clock-persist t)
-(org-clock-persistence-insinuate)
-(setq org-clock-report-include-clocking-task t)
-(defadvice org-clock-in (after sacha activate)
-  "Mark STARTED when clocked in."
-  (save-excursion
-    (catch 'exit
-      (cond
-       ((derived-mode-p 'org-agenda-mode)
-        (let* ((marker (or (org-get-at-bol 'org-marker)
-                           (org-agenda-error)))
-               (hdmarker (or (org-get-at-bol 'org-hd-marker) marker))
-               (pos (marker-position marker))
-               (col (current-column))
-               newhead)
-          (org-with-remote-undo (marker-buffer marker)
-            (with-current-buffer (marker-buffer marker)
-              (widen)
-              (goto-char pos)
-              (org-back-to-heading t)
-              (if (org-get-todo-state)
-                  (org-todo "STARTED"))))))
-       (t (if (org-get-todo-state)
-              (org-todo "STARTED")))))))
 
-(setq org-log-into-drawer "LOGBOOK")
-(setq org-clock-into-drawer 1)
+;; updating the calendar on saving is annoying because it adds lag every time we
+;; save an org-mode buffer. this waits until we have been idle for 20 minutes and
+;; does it.
+(defvar roryk-org-sync-timer nil)
 
+(defvar roryk-org-sync-secs (* 60 20))
 
-(defun rory/org-mode-ask-effort ()
-  "Ask for an effort estimate when clocking in."
-  (unless (org-entry-get (point) "Effort")
-    (let ((effort
-           (completing-read
-            "Effort: "
-            (org-entry-get-multivalued-property (point) "Effort"))))
-      (unless (equal effort "")
-        (org-set-property "Effort" effort)))))
+(defun roryk-org-sync ()
+  (org-icalendar-combine-agenda-files)
+  (notify-osx "Emacs (org-mode)" "iCal sync completed."))
 
-(add-hook 'org-clock-in-prepare-hook 'rory/org-mode-ask-effort)
+(defun roryk-org-sync-start ()
+  "Start automated org-mode syncing"
+  (interactive)
+  (setq roryk-org-sync-timer
+        (run-with-idle-timer roryk-org-sync-secs t
+                             'roryk-org-sync)))
+
+(defun roryk-org-sync-stop ()
+  "Stop automated org-mode syncing"
+  (interactive)
+  (cancel-timer roryk-org-sync-timer))
+
+(roryk-org-sync-start)
 
 (provide 'personal-org)
