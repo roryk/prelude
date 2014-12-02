@@ -1,4 +1,4 @@
-(prelude-require-packages '(cyberpunk-theme yaml-mode ess))
+(prelude-require-packages '(cyberpunk-theme todochiku))
 
 ;;(key-chord-mode -1) ; this does not play well with evil-mode
 
@@ -17,13 +17,10 @@
 (global-set-key (kbd "RET") 'newline-and-indent)
 (load-theme 'cyberpunk t) ; this is nice and bright
 
-(add-to-list 'default-frame-alist '(font . "Source-Code-Pro-12"))
+;; (add-to-list 'default-frame-alist '(font . "Source-Code-Pro-12"))
 
 ;; any type of bell coupled with evil-mode is obnoxious
 (setq ring-bell-function 'ignore)
-
-;; set up YAML mode
-(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
 ;; run a local flycheck not remote
 (defadvice flycheck-start-checker (around flycheck-fix-start-process activate compile)
@@ -35,15 +32,15 @@
 
 ;; set up some nice ido mode defaults
 (setq ido-enable-flex-matching t
-      ido-auto-merge-work-directories-length -1
-      ido-create-new-buffer 'always
-      ido-use-filename-at-point 'guess
-      ido-everywhere t
-      ido-default-buffer-method 'selected-window)
+     ido-auto-merge-work-directories-length -1
+     ido-create-new-buffer 'always
+     ido-use-filename-at-point 'guess
+     ido-everywhere t
+     ido-default-buffer-method 'selected-window)
 (ido-mode 1)
 (put 'ido-exit-minibuffer 'disabled nil)
 (when (require 'ido-ubiquitous nil t)
-  (ido-ubiquitous-mode 1))
+ (ido-ubiquitous-mode 1))
 
 ;; don't spread backup files everywhere
 (setq backup-directory-alist
@@ -62,5 +59,30 @@
   (let ((use-dialog-box nil))
     ad-do-it))
 
-(provide 'personal.el)
+(setq todochiku-command "growlnotify")
+(require 'todochiku)
+(setq org-show-notification-handler
+      '(lambda (notification)
+         (todochiku-message "org-mode notification" notification
+                            (todochiku-icon 'emacs))))
+(defun my-org-agenda-to-appt ()
+  (interactive)
+  (setq appt-time-msg-list nil)
+  (org-agenda-to-appt))
 
+(my-org-agenda-to-appt)
+(setq appt-message-warning-time 60)
+(setq appt-display-interval 5)
+(appt-activate t)
+(run-at-time "24:01" nil 'my-org-agenda-to-appt)
+(add-hook 'org-finalize-agenda-hook 'my-org-agenda-to-appt)
+
+;;; fix some of the encoding in ansi-term
+(defadvice ansi-term (after advise-ansi-term-coding-system)
+  (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
+(ad-activate 'ansi-term)
+
+(setq auto-indent-newline-function 'newline-and-indent)
+
+
+(provide 'personal.el)
