@@ -48,6 +48,12 @@
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 
+;; auto-save undo history
+(setq undo-tree-history-directory-alist
+      `((".*" . , temporary-file-directory)))
+(setq undo-tree-auto-save-history t)
+
+
 ;; prevent dialog boxes from opening up on OSX
 (defadvice yes-or-no-p (around prevent-dialog activate)
   "Prevent yes-or-no-p from activating a dialog"
@@ -84,5 +90,30 @@
 
 (setq auto-indent-newline-function 'newline-and-indent)
 
+;; be a little less aggressive running auto-complete in text-mode and latex-mode
+(setq ac-auto-start 3)
+(setq company-minimum-prefix-length 3)
+
+(defun endless/config-prose-completion ()
+  "Make auto-complete less agressive in this buffer."
+  (setq-local company-minimum-prefix-length 6)
+  (setq-local ac-auto-start 6))
+
+(add-hook 'text-mode-hook
+          #'endless/config-prose-completion)
+(add-hook 'latex-mode-hook
+          #'endless/config-prose-completion)
+
+;; snagged from https://github.com/kaz-yos
+(require 'tramp)
+(setq tramp-default-method "ssh")
+(setq tramp-password-prompt-regexp
+      "^.*\\([pP]assword\\|[pP]assphrase\\|Verification code\\).*:? *")
+(setq tramp-ssh-controlmaster-options
+      (concat
+       "-o ControlPath=~/.ssh/%%r@%%h:%%p"))
+
+;; disable autosave, evil-mode encourages constant saving
+(setq auto-save-default nil)
 
 (provide 'personal.el)
