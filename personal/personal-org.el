@@ -18,7 +18,7 @@
         (sequence "MEET(m)" "|" "COMPLETE(x)")
         (sequence "TODELEGATE(-)" "DELEGATED(d)" "COMPLETE(x)")))
 
-; stuff for GTD
+                                        ; stuff for GTD
 (setq org-agenda-custom-commands
       '(("W" "Weekly Review"
          ((agenda "" ((org-agenda-span 7)
@@ -32,7 +32,7 @@
           (tags "SOMEDAY"))) ;; review someday/maybe items
 
         ("D" "Daily review"
-         ((agenda "" ((org-agenda-ndays 15)))
+         ((agenda "" ((org-agenda-ndays 7)))
           (todo "DELEGATED") ;; projects we are waiting on
           (todo "NEXT")
           (tags "@errands")))))
@@ -100,7 +100,7 @@
  '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
  '(org-level-5 ((t (:inherit outline-5 :height 1.0)))))
 
- ;; org-capture
+;; org-capture
 (setq org-reverse-note-order t)
 (setq org-refile-use-outline-path nil)
 (setq org-refile-allow-creating-parent-nodes 'confirm)
@@ -113,13 +113,18 @@
                       ("@writing" . ?w)
                       ("@errands" . ?e)
                       ("@coding" . ?c)
-                      ("@phone" . ?p)
                       ("@reading" . ?r)
                       ("@summary" . ?s)
                       ("@computer" . ?l)
-                      ("quantified" . ?q)
-                      ("lowenergy" . ?0)
-                      ("highenergy" . ?1)))
+                      ("@project" . ?p)))
+
+;;; try org-projectile
+(require 'org-projectile)
+(setq org-projectile:projects-file
+      "~/Documents/Org/hsph.org")
+(add-to-list 'org-capture-templates (org-projectile:project-todo-entry))
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "C-c n p") 'org-projectile:project-todo-completing-read)
 
 ;; updating the calendar on saving is annoying because it adds lag every time we
 ;; save an org-mode buffer. this waits until we have been idle for 20 minutes and
@@ -145,5 +150,12 @@
   (cancel-timer roryk-org-sync-timer))
 
 (roryk-org-sync-start)
+
+;; enable ditaa mode in org-mode
+(setq org-ditaa-jar-path "/usr/local/Cellar/ditaa/0.9/libexec/ditaa0_9.jar")
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((ditaa . t)
+   (dot . t)))
 
 (provide 'personal-org)
