@@ -48,12 +48,6 @@
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 
-;; auto-save undo history
-(setq undo-tree-history-directory-alist
-      `((".*" . , temporary-file-directory)))
-(setq undo-tree-auto-save-history t)
-
-
 ;; prevent dialog boxes from opening up on OSX
 (defadvice yes-or-no-p (around prevent-dialog activate)
   "Prevent yes-or-no-p from activating a dialog"
