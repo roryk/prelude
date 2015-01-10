@@ -15,6 +15,8 @@
          "WAITING(w)"
          "SOMEDAY(.)"
          "|" "DONE(x!)" "CANCELLED(c@)")
+        (sequence "NEXT(n)"
+                  "|" "DONE(x!)" "CANCLELLED(c@)")
         (sequence "MEET(m)" "|" "COMPLETE(x)")
         (sequence "TODELEGATE(-)" "DELEGATED(d)" "COMPLETE(x)")))
 
@@ -116,6 +118,7 @@
                       ("@reading" . ?r)
                       ("@summary" . ?s)
                       ("@computer" . ?l)
+                      ("@wedding" . ?W)
                       ("@project" . ?p)))
 
 ;;; try org-projectile
