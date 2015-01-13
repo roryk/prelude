@@ -27,6 +27,7 @@
                       (org-agenda-start-day "-7d")
                       (org-agenda-entry-types '(:timestamp))
                       (org-agenda-show-log t)))
+          (stuck "")
           (todo "WAITING") ;; projects we are waiting on
           (todo "TODO")  ;; review what is next
           (tags "INBOX" ((org-agenda-files '("~/Documents/Org/inbox.org"))))
@@ -37,6 +38,7 @@
          ((agenda "" ((org-agenda-ndays 7)))
           (todo "DELEGATED") ;; projects we are waiting on
           (todo "NEXT")
+          (stuck "")
           (tags "@errands")))))
 
 (setq org-agenda-files '("~/Documents/Org/hsph.org" "~/Documents/Org/habits.org"))
@@ -116,7 +118,7 @@
                       ("@errands" . ?e)
                       ("@coding" . ?c)
                       ("@reading" . ?r)
-                      ("@summary" . ?s)
+                      ("@software" . ?s)
                       ("@computer" . ?l)
                       ("@wedding" . ?W)
                       ("@project" . ?p)))
@@ -154,12 +156,16 @@
 
 (roryk-org-sync-start)
 
-;; enable ditaa mode in org-mode
-(setq org-ditaa-jar-path "/usr/local/Cellar/ditaa/0.9/libexec/ditaa0_9.jar")
+;; enable languages i use a bunch in org-babel
 (org-babel-do-load-languages
  'org-babel-load-languages
- '((ditaa . t)
-   (dot . t)
+ '((dot . t)
    (latex . t)))
+
+;;
+;;(setq org-stuck-projects '("+@project/-MAYBE-DONE" ("NEXT" "TODO")))
+(setq org-stuck-projects
+      '("+@project/-MAYBE-DONE" ("NEXT") nil "\\<IGNORE\\>"))
+(setq org-tags-exclude-from-inheritance '("@project"))
 
 (provide 'personal-org)
