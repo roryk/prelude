@@ -162,10 +162,8 @@
  '((dot . t)
    (latex . t)))
 
-;;
-;;(setq org-stuck-projects '("+@project/-MAYBE-DONE" ("NEXT" "TODO")))
-(setq org-stuck-projects
-      '("+@project/-MAYBE-DONE" ("NEXT") nil "\\<IGNORE\\>"))
+;; all projects must have a NEXT
+(setq org-stuck-projects '("+@project/-MAYBE-DONE" ("NEXT")))
 (setq org-tags-exclude-from-inheritance '("@project"))
 
 (provide 'personal-org)
