@@ -20,7 +20,7 @@
         (sequence "MEET(m)" "|" "COMPLETE(x)")
         (sequence "TODELEGATE(-)" "DELEGATED(d)" "COMPLETE(x)")))
 
-                                        ; stuff for GTD
+;; stuff for GTD
 (setq org-agenda-custom-commands
       '(("W" "Weekly Review"
          ((agenda "" ((org-agenda-span 7)
@@ -30,14 +30,14 @@
           (stuck "")
           (todo "WAITING") ;; projects we are waiting on
           (todo "TODO")  ;; review what is next
-          (tags "INBOX" ((org-agenda-files '("~/Documents/Org/inbox.org"))))
           (tags "PROJECT") ;; review all projects
           (tags "SOMEDAY"))) ;; review someday/maybe items
 
         ("D" "Daily review"
          ((agenda "" ((org-agenda-ndays 7)))
-          (todo "DELEGATED") ;; projects we are waiting on
+          (todo "DELEGATED|WAITING") ;; projects we are waiting on
           (todo "NEXT")
+          (tags "@inbox")
           (stuck "")
           (tags "@errands")))))
 
@@ -114,6 +114,7 @@
 
 (setq org-tag-alist '(("@work" . ?b)
                       ("@home" . ?h)
+                      ("@inbox" . ?i)
                       ("@writing" . ?w)
                       ("@errands" . ?e)
                       ("@coding" . ?c)
@@ -163,7 +164,7 @@
    (latex . t)))
 
 ;; all projects must have a NEXT
-(setq org-stuck-projects '("+@project/-MAYBE-DONE" ("NEXT")))
+(setq org-stuck-projects '("+@project/-MAYBE-DONE" ("NEXT" "WAITING" "DELEGATED")))
 (setq org-tags-exclude-from-inheritance '("@project"))
 
 (provide 'personal-org)
